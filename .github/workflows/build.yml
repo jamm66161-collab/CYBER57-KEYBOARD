@@ -1,1 +1,37 @@
 
+name: Build CYBER57 Keyboard
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: دریافت پروژه
+        uses: actions/checkout@v4
+
+      - name: نصب جاوا
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: نصب اندروید SDK
+        uses: android-actions/setup-android@v3
+
+      - name: استخراج پروژه
+        run: |
+          unzip -q CYBER57_KEYBOARD_V1.zip -d extracted
+          cd extracted/CYBER57_KEYBOARD
+          gradle assembleDebug
+
+      - name: دریافت فایل APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: CYBER57-KEYBOARD-APK
+          path: extracted/CYBER57_KEYBOARD/app/build/outputs/apk/debug/app-debug.apk
+
